@@ -5,12 +5,14 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using FluentResults;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityService;
 
 public interface ITokenService
 {
+    public ILogger<ITokenService> Logger { get; }
     public Task<Result<ITokenResponse?>> CreateTokenAsync(string userId, ClaimsPrincipal user);
     
     public Task<Result<ITokenResponse?>> RefreshTokenAsync(string refreshToken);
@@ -26,7 +28,5 @@ public interface ITokenService
         DateTimeOffset? expiredAt,
         DateTimeOffset? notBefore);
 
-    public Task<Result<IToken?>> GenerateRefreshTokenAsync(DateTimeOffset? issuedAt,
-        DateTimeOffset? expiredAt,
-        DateTimeOffset? notBefore);
+    public Task<Result<IToken?>> GenerateRefreshTokenAsync(DateTimeOffset? issuedAt);
 }
