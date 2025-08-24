@@ -2,6 +2,9 @@
   <Folder Name="/src/">
     <Project Path="src/IdentityService/IdentityService.csproj" />
   </Folder>
+  <Folder Name="/src/jwt/">
+    <Project Path="src/jwt/IdentityService.Jwt.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/IdentityService.Tests/IdentityService.Tests.csproj" />
   </Folder>
