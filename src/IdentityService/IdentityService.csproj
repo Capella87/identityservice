@@ -1,22 +1,25 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net9.0</TargetFrameworks>
+    <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="FluentResults" Version="4.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="9.0.8" />
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.14.0" />
-    <PackageReference Include="System.Text.Json" Version="9.0.8" />
+    <PackageReference Include="FluentResults" Version="4.0.0" Condition="'$(TargetFramework)' == 'net9.0'" />
+    <PackageReference Include="FluentResults" Version="4.0.0" Condition="'$(TargetFramework)' == 'net8.0'" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="[9.0.8, 10.0.0)" Condition="'$(TargetFramework)' == 'net9.0'" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="[8.0.0, 9.0.0)" Condition="'$(TargetFramework)' == 'net8.0'" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="[9.0.8, 10.0.0)" Condition="'$(TargetFramework)' == 'net9.0'" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="[8.0.19, 9.0.0)" Condition="'$(TargetFramework)' == 'net8.0'" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="[9.0.8, 10.0.0)" Condition="'$(TargetFramework)' == 'net9.0'" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="[8.0.19, 9.0.0)" Condition="'$(TargetFramework)' == 'net8.0'" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.14.0" Condition="'$(TargetFramework)' == 'net9.0'" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.14.0" Condition="'$(TargetFramework)' == 'net8.0'" />
+    <PackageReference Include="System.Text.Json" Version="[9.0.8, 10.0.0)" Condition="'$(TargetFramework)' == 'net9.0'" />
+    <PackageReference Include="System.Text.Json" Version="[8.0.6, 9.0.0)" Condition="'$(TargetFramework)' == 'net8.0'" />
   </ItemGroup>
 
 </Project>
