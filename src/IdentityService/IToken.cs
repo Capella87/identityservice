@@ -12,7 +12,7 @@ public interface IToken
 
     public string Token { get; set; }
 
-    public DateTimeOffset? ExpiredAt { get; set; }
+    public DateTimeOffset? ExpiresAt { get; set; }
 
     public DateTimeOffset? IssuedAt { get; set; }
 

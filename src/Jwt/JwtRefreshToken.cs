@@ -1,4 +1,3 @@
-
 using System.ComponentModel.DataAnnotations;
 
 namespace IdentityService.Jwt;
@@ -11,7 +10,7 @@ public class JwtRefreshToken : IToken
     [Required]
     public required string Token { get; set; }
 
-    public DateTimeOffset? ExpiredAt { get; set; }
+    public DateTimeOffset? ExpiresAt { get; set; }
 
     public DateTimeOffset? IssuedAt { get; set; }
 

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace IdentityService.Jwt;
 
-[Jso]
 public class JwtTokenResponse : ITokenResponse
 {
     [JsonPropertyName("access_token")]

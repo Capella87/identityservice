@@ -14,7 +14,7 @@ public interface ITokenService
 {
     public ILogger<ITokenService> Logger { get; }
     public Task<Result<ITokenResponse?>> CreateTokenAsync(string userId, ClaimsPrincipal user);
-    
+
     public Task<Result<ITokenResponse?>> RefreshTokenAsync(string refreshToken);
 
     public Task<Result<IToken?>> GetTokenAsync(string token);
@@ -25,8 +25,10 @@ public interface ITokenService
 
     public Task<Result<SecurityToken>> GenerateAccessTokenAsync(IEnumerable<Claim> claims,
         DateTimeOffset? issuedAt,
-        DateTimeOffset? expiredAt,
+        DateTimeOffset? expiresAt,
         DateTimeOffset? notBefore);
 
-    public Task<Result<IToken?>> GenerateRefreshTokenAsync(DateTimeOffset? issuedAt);
+    public Task<Result<IToken?>> GenerateRefreshTokenAsync(DateTimeOffset? issuedAt,
+        DateTimeOffset? expiresAt,
+        DateTimeOffset? notBefore);
 }
