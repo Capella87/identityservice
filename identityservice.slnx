@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/samples/">
+    <Project Path="samples/IdentityService.SampleApi/IdentityService.SampleApi.csproj" Id="384debce-f239-4718-b4b3-90523f0e1de8" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/IdentityService/IdentityService.csproj" />
   </Folder>
