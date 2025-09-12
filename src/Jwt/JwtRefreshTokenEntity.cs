@@ -16,4 +16,15 @@ public class JwtRefreshTokenEntity<TUser, UserKey> : JwtRefreshToken
     public UserKey? UserId { get; set; }
 
     public TUser? User { get; set; }
+
+    public bool IsRevoked { get; set; } = false;
+}
+
+public class JwtRefreshTokenEntity<TUser> : JwtRefreshTokenEntity<TUser, string>
+    where TUser : IdentityUser<string>
+{
+}
+
+public class JwtRefreshTokenEntity : JwtRefreshTokenEntity<IdentityUser<string>>
+{
 }
