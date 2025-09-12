@@ -88,5 +88,23 @@ public class JwtTokenHandler : JwtBearerHandler, IAuthenticationSignInHandler
         }
     }
 
-    protected virtual Task HandleSignOutAsync(AuthenticationProperties properties) => Task.CompletedTask;
+    protected virtual async Task HandleSignOutAsync(AuthenticationProperties properties)
+    {
+        // Try to get the refresh token from the request header;
+        var refreshToken = Context.Request.Headers["X-Refresh-Token"].FirstOrDefault();
+        if (string.IsNullOrEmpty(refreshToken))
+        {
+            // Error out if no refresh token is provided;
+            Context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            return;
+        }
+
+        // Revoke tokens if needed; Requires Refresh token to invalidate
+        var result = await _tokenService.RevokeTokenAsync(refreshToken!);
+        if (result.IsFailed)
+        {
+            Context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            return;
+        }
+    }
 }
