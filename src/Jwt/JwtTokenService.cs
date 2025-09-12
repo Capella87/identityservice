@@ -17,20 +17,24 @@ using FluentResults.Extensions;
 
 namespace IdentityService.Jwt;
 
-public class JwtTokenService : ITokenService
+public class JwtTokenService<TUser, TKey> : ITokenService<TUser, TKey>
+    where TUser : IdentityUser<TKey>
+    where TKey : IEquatable<TKey>
 {
     private readonly IConfiguration _config;
     private readonly JwtSettings _jwtSettings;
-    private readonly ILogger<JwtTokenService> _logger;
+    private readonly ILogger<JwtTokenService<TUser, TKey>> _logger;
     private readonly JsonWebTokenHandler _jwtHandler;
+    private readonly ITokenRepository _tokenRepository;
 
-    ILogger<ITokenService> ITokenService.Logger => _logger;
-
-    public JwtTokenService(IConfiguration config, ILogger<JwtTokenService> logger, IOptions<JwtSettings> jwtSettings)
+    public JwtTokenService(IConfiguration config, ILogger<JwtTokenService<TUser, TKey>> logger,
+        IOptions<JwtSettings> jwtSettings,
+        ITokenRepository tokenRepository)
     {
         _config = config;
         _jwtSettings = jwtSettings.Value;
         _logger = logger;
+        _tokenRepository = tokenRepository;
         _jwtHandler = new JsonWebTokenHandler()
         {
             MapInboundClaims = JwtSecurityTokenHandler.DefaultMapInboundClaims,
@@ -130,7 +134,7 @@ public class JwtTokenService : ITokenService
         throw new NotImplementedException();
     }
 
-    public async Task<Result<ITokenResponse?>> RefreshTokenAsync(string refreshToken)
+    public async Task<Result<ITokenResponse?>> RefreshTokenAsync(string refreshToken, ClaimsPrincipal user)
     {
         var rt = await GetTokenAsync(refreshToken);
 
