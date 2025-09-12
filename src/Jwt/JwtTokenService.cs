@@ -14,6 +14,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using FluentResults.Extensions;
+using Microsoft.AspNetCore.Identity;
+
+using IdentityService.Data;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace IdentityService.Jwt;
 
@@ -41,6 +45,12 @@ public class JwtTokenService<TUser, TKey> : ITokenService<TUser, TKey>
         };
     }
 
+    /// <summary>
+    /// Creates a new JWT token and a refresh token if enabled.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
     public virtual async Task<Result<ITokenResponse?>> CreateTokenAsync(string userId, ClaimsPrincipal user)
     {
         JwtRefreshToken? refreshToken = null;
@@ -57,7 +67,30 @@ public class JwtTokenService<TUser, TKey> : ITokenService<TUser, TKey>
             }
             refreshToken = tokenResult.Value as JwtRefreshToken;
 
+            var refreshTokenEntity = new JwtRefreshTokenEntity<TUser, TKey>
+            {
+                Id = refreshToken!.Id,
+                Token = refreshToken.Token,
+                IssuedAt = refreshToken.IssuedAt,
+                NotBefore = refreshToken.NotBefore,
+                ExpiresAt = refreshToken.ExpiresAt,
+                IsRevoked = false,
+                UserId = (TKey)Convert.ChangeType(userId, typeof(TKey))
+            };
+            var lookupResult = await LookupUserByUserIdAsync(userId);
+
+            if (lookupResult.IsFailed)
+            {
+                return Result.Fail(lookupResult.Errors);
+            }
+            refreshTokenEntity!.User = lookupResult.Value;
+
             // Connect to the database and save the token.
+            var saveResult = await _tokenRepository.SaveTokenAsync(refreshTokenEntity);
+            if (saveResult.IsFailed)
+            {
+                return Result.Fail(saveResult.Errors);
+            }
         }
 
         // Issue access token
@@ -103,12 +136,12 @@ public class JwtTokenService<TUser, TKey> : ITokenService<TUser, TKey>
     }
 
     /// <summary>
-    /// Generate a new refresh token. Remember that you must set time to issue.
+    /// Generates a new refresh token. Remember that you must set time to issue.
     /// </summary>
     /// <param name="issuedAt"></param>
     /// <param name="expiresAt"></param>
     /// <param name="notBefore"></param>
-    /// <returns></returns>
+    /// <returns>The successfully created IToken. If it is failed to create a refresh token, returns null.</returns>
     public virtual async Task<Result<IToken?>> GenerateRefreshTokenAsync(DateTimeOffset? issuedAt = null,
         DateTimeOffset? notBefore = null,
         DateTimeOffset? expiresAt = null)
@@ -131,12 +164,18 @@ public class JwtTokenService<TUser, TKey> : ITokenService<TUser, TKey>
 
     public virtual async Task<Result<IToken?>> GetTokenAsync(string token)
     {
-        throw new NotImplementedException();
+        var result = await _tokenRepository.GetTokenAsync(token);
+        if (result.IsFailed)
+        {
+            return Result.Fail("Token not found.");
+        }
+        return Result.Ok(result.Value);
     }
 
     public async Task<Result<ITokenResponse?>> RefreshTokenAsync(string refreshToken, ClaimsPrincipal user)
     {
         var rt = await GetTokenAsync(refreshToken);
+        var tokenUser = (rt.Value as JwtRefreshTokenEntity<TUser, TKey>)!.User;
 
         if (rt.IsFailed)
         {
@@ -160,19 +199,78 @@ public class JwtTokenService<TUser, TKey> : ITokenService<TUser, TKey>
             return Result.Fail(rTokenResult.Errors);
         }
 
-        // Save to the database
+        var tokenEntity = new JwtRefreshTokenEntity<TUser, TKey>
+        {
+            Token = rTokenResult.Value!.Token,
+            IssuedAt = rTokenResult.Value!.IssuedAt,
+            NotBefore = rTokenResult.Value!.NotBefore,
+            ExpiresAt = rTokenResult.Value!.ExpiresAt,
+            IsRevoked = false,
+            UserId = tokenUser!.Id,
+            // User = tokenUser,
+            Id = rTokenResult.Value!.Id
+        };
 
-        // Create an access token
+        // Save the refresh token to the database
+        var result = await _tokenRepository.SaveTokenAsync(tokenEntity);
+
+        if (result.IsFailed)
+        {
+            return Result.Fail(result.Errors);
+        }
+
+        var issuedAt = DateTimeOffset.UtcNow;
+        var accessTokenResult = await GenerateAccessTokenAsync(user.Claims,
+            issuedAt,
+            issuedAt.AddMinutes(
+                _jwtSettings.AccessToken.ExpiresInMinutes ?? 15),
+            issuedAt);
+
+        if (accessTokenResult.IsFailed)
+        {
+            return Result.Fail(accessTokenResult.Errors);
+        }
+
+        return Result.Ok<ITokenResponse?>(new JwtTokenResponse
+        {
+            AccessToken = (accessTokenResult.Value as JsonWebToken)!.EncodedToken,
+            AccessTokenExpiresAt = accessTokenResult.Value.ValidTo,
+            RefreshToken = tokenEntity.Token,
+            RefreshTokenExpiresAt = tokenEntity.ExpiresAt,
+        });
     }
 
     public virtual async Task<Result> RevokeAllUserTokensAsync(string userId)
     {
-        throw new NotImplementedException();
+        var tokenLookupResult = await _tokenRepository.GetTokensByUserIdAsync(userId);
+        if (tokenLookupResult.IsFailed)
+        {
+            return Result.Fail(tokenLookupResult.Errors);
+        }
+
+        var revokeResult = await _tokenRepository.RevokeAllTokensByUserIdAsync(userId);
+        if (revokeResult.IsFailed)
+        {
+            return Result.Fail(revokeResult.Errors);
+        }
+        return Result.Ok();
     }
 
     public virtual async Task<Result> RevokeTokenAsync(string token)
     {
-        throw new NotImplementedException();
+        var result = await _tokenRepository.GetTokenAsync(token);
+        if (result.IsFailed)
+        {
+            return Result.Fail("Token not found.");
+        }
+
+        var revokeResult = await _tokenRepository.RevokeTokenAsync(result.Value!);
+        if (revokeResult.IsFailed)
+        {
+            return Result.Fail(revokeResult.Errors);
+        }
+
+        return Result.Ok();
     }
 
     private SecurityTokenDescriptor GetAccessTokenDescriptor(IEnumerable<Claim> claims,
@@ -201,5 +299,17 @@ public class JwtTokenService<TUser, TKey> : ITokenService<TUser, TKey>
             ), _jwtSettings.AccessToken.SigningAlgorithm)
         };
         return descriptor;
+    }
+
+    private async Task<Result<TUser?>> LookupUserByUserIdAsync(string userId)
+    {
+        var result = await _tokenRepository.GetUserByIdAsync<TUser>(userId);
+
+        if (result.IsFailed)
+        {
+            return Result.Fail(result.Errors);
+        }
+
+        return result.Value;
     }
 }
