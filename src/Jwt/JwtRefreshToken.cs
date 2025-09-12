@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace IdentityService.Jwt;
 
+/// <summary>
+/// Refresh Token model for JWT access tokens that implements IToken interface.
+/// </summary>
 public class JwtRefreshToken : IToken
 {
     [Key]

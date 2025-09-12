@@ -11,6 +11,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityService;
 
+/// <summary>
+/// A token service interface for creating, refreshing, retrieving, and revoking tokens.
+/// </summary>
 public interface ITokenService
 {
     public Task<Result<ITokenResponse?>> CreateTokenAsync(string userId, ClaimsPrincipal user);

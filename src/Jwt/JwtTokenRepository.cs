@@ -5,6 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.Data;
 
+/// <summary>
+/// A repository for managing JWT tokens using Entity Framework Core and database providers.
+/// </summary>
+/// <typeparam name="TUser"></typeparam>
+/// <typeparam name="UserKey"></typeparam>
 public class JwtTokenRepository<TUser, UserKey> : ITokenRepository
     where TUser : IdentityUser<UserKey>
     where UserKey : IEquatable<UserKey>

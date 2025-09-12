@@ -23,6 +23,12 @@ namespace IdentityService.Jwt.Identity;
 // Source: https://github.com/dotnet/aspnetcore/blob/main/src/Security/Authentication/BearerToken/src/BearerTokenHandler.cs
 // Source: https://github.com/dotnet/aspnetcore/blob/main/src/Security/Authentication/JwtBearer/src/JwtBearerHandler.cs
 
+/// <summary>
+/// A JWT Token Handler compatible with ASP.NET Core Identity that supports SignIn and SignOut operations using JWT tokens.
+/// Implements IAuthenticationSignInHandler and IAuthenticationSignOutHandler.
+/// </summary>
+/// <typeparam name="TUser"></typeparam>
+/// <typeparam name="UserKey"></typeparam>
 public class JwtTokenHandler<TUser, UserKey> : JwtBearerHandler, IAuthenticationSignInHandler, IAuthenticationSignOutHandler
     where TUser : IdentityUser<UserKey>
     where UserKey : IEquatable<UserKey>

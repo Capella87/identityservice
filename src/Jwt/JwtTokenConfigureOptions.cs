@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace IdentityService.Jwt;
 
+/// <summary>
+/// Configuration options for JwtBearerOptions, used by the JwtTokenHandler. This class is made because the equivalent option class is not exposed publicly.
+/// </summary>
 internal class JwtTokenConfigureOptions : IConfigureNamedOptions<JwtBearerOptions>
 {
     private readonly IAuthenticationConfigurationProvider _authenticationConfigurationProvider;

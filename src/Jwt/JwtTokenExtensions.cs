@@ -37,6 +37,16 @@ public static class JwtTokenExtensions
         where UserKey : IEquatable<UserKey>
         => builder.AddJwtToken<TUser, UserKey>(authenticationScheme, null, configureOptions);
 
+    /// <summary>
+    /// Adds JWT token authentication scheme to the authentication builder.
+    /// </summary>
+    /// <typeparam name="TUser"></typeparam>
+    /// <typeparam name="UserKey"></typeparam>
+    /// <param name="builder"></param>
+    /// <param name="authenticationScheme">The Authentication scheme. For JWT, "Bearer" is the default scheme.</param>
+    /// <param name="displayName"></param>
+    /// <param name="configureOptions"></param>
+    /// <returns></returns>
     public static AuthenticationBuilder AddJwtToken<TUser, UserKey>(this AuthenticationBuilder builder,
         string authenticationScheme,
         string? displayName,

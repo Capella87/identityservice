@@ -29,17 +29,19 @@ public static class JwtTokenIdentityExtensions
     }
 
     // Source: https://github.com/dotnet/aspnetcore/blob/main/src/Identity/Core/src/IdentityServiceCollectionExtensions.cs
-        /// <summary>
-        /// Adds and configures the identity system for the specified User and Role types with JWT token system.
-        /// </summary>
-        /// <typeparam name="TUser"></typeparam>
-        /// <typeparam name="TRole"></typeparam>
-        /// <param name="services"></param>
-        /// <param name="setupAction"></param>
-        /// <returns></returns>
-        /// <exception cref="SecurityTokenInvalidIssuerException"></exception>
-        /// <exception cref="SecurityTokenInvalidAudienceException"></exception>
-        /// <exception cref="SecurityTokenSignatureKeyNotFoundException"></exception>
+    /// <summary>
+    /// Adds and configures the identity system for the specified User and Role types with JWT token system.
+    /// Note that this methods requires "JwtSettings" section in the IConfiguration.
+    /// This extension method sets up other authentication schemes for external login, two-factor authentication, etc.
+    /// </summary>
+    /// <typeparam name="TUser"></typeparam>
+    /// <typeparam name="TRole"></typeparam>
+    /// <param name="services"></param>
+    /// <param name="setupAction"></param>
+    /// <returns></returns>
+    /// <exception cref="SecurityTokenInvalidIssuerException"></exception>
+    /// <exception cref="SecurityTokenInvalidAudienceException"></exception>
+    /// <exception cref="SecurityTokenSignatureKeyNotFoundException"></exception>
     public static IdentityBuilder AddJwtTokenIdentity<TUser, TRole, UserKey>(
         this IServiceCollection services,
         Action<IdentityOptions> setupAction)

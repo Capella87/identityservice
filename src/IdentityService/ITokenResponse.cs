@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace IdentityService;
 
+/// <summary>
+/// A token response for access token and refresh token (optional).
+/// </summary>
 public interface ITokenResponse
 {
     public string AccessToken { get; set; }

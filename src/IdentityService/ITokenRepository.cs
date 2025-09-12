@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace IdentityService.Data;
 
+/// <summary>
+/// An interface for a token repository to manage tokens.
+/// </summary>
 public interface ITokenRepository
 {
     public Task<Result<IToken?>> GetTokenAsync(string token);

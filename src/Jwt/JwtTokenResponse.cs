@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace IdentityService.Jwt;
 
+/// <summary>
+/// A response model containing JWT access token, refresh token (optional), and their expiration times.
+/// </summary>
 public class JwtTokenResponse : ITokenResponse
 {
     [JsonPropertyName("access_token")]

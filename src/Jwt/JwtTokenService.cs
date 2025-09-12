@@ -21,6 +21,11 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace IdentityService.Jwt;
 
+/// <summary>
+/// A service for creating and managing JWT token and refresh tokens.
+/// </summary>
+/// <typeparam name="TUser"></typeparam>
+/// <typeparam name="TKey"></typeparam>
 public class JwtTokenService<TUser, TKey> : ITokenService<TUser, TKey>
     where TUser : IdentityUser<TKey>
     where TKey : IEquatable<TKey>

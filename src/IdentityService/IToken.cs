@@ -6,6 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace IdentityService;
+
+/// <summary>
+/// An interface for a token, usually for refresh tokens or any other customized tokens.
+/// </summary>
 public interface IToken
 {
     public string Id { get; set; }
@@ -19,6 +23,10 @@ public interface IToken
     public DateTimeOffset? NotBefore { get; set; }
 }
 
+/// <summary>
+/// An interface for a token including the underlying security token.
+/// </summary>
+/// <typeparam name="TSecurityToken"></typeparam>
 public interface IToken<TSecurityToken> : IToken where TSecurityToken : SecurityToken
 {
     public TSecurityToken SecurityToken { get; set; }

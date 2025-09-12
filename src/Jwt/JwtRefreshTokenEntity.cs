@@ -8,6 +8,11 @@ using System.Threading.Tasks;
 
 namespace IdentityService.Jwt;
 
+/// <summary>
+/// Represents a JWT refresh token entity that is associated with a user for database providers.
+/// </summary>
+/// <typeparam name="TUser"></typeparam>
+/// <typeparam name="UserKey"></typeparam>
 public class JwtRefreshTokenEntity<TUser, UserKey> : JwtRefreshToken
     where TUser : IdentityUser<UserKey>
     where UserKey : IEquatable<UserKey>

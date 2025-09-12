@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace IdentityService.Jwt;
 
+/// <summary>
+/// Settings for JWT access token and refresh token.
+/// </summary>
 public class JwtSettings
 {
     [JsonPropertyName("AccessToken")]
@@ -16,6 +19,9 @@ public class JwtSettings
     public RefreshTokenSettings RefreshToken { get; set; } = default!;
 }
 
+/// <summary>
+/// Settings for JSON Web Token (JWT) access tokens.
+/// </summary>
 public class AccessTokenSettings
 {
     public bool? ValidateIssuers { get; set; } = true;
@@ -35,6 +41,9 @@ public class AccessTokenSettings
     public string? SigningAlgorithm { get; set; }
 }
 
+/// <summary>
+/// Settings for JWT refresh tokens.
+/// </summary>
 public class RefreshTokenSettings
 {
     public bool? EnableRefreshToken { get; set; } = false;
