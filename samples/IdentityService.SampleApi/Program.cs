@@ -2,6 +2,7 @@ using IdentityService;
 using IdentityService.Data;
 using IdentityService.Jwt;
 using IdentityService.Jwt.Extensions;
+using IdentityService.SampleApi;
 using IdentityService.SampleApi.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Rewrite;
@@ -60,7 +61,11 @@ try
                 npgsqlOptions.EnableRetryOnFailure();
             });
     });
-    builder.Services.AddJwtTokenIdentity<IdentityUser, IdentityRole<string>>(options =>
+
+    builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+    builder.Services.AddScoped<ITokenRepository, JwtTokenRepository<IdentityUser<string>, string>>(sp =>
+        new JwtTokenRepository<IdentityUser<string>, string>(sp.GetRequiredService<AppDbContext>()));
+    builder.Services.AddJwtTokenIdentity<IdentityUser<string>, IdentityRole, string>(options =>
     {
         options.User.RequireUniqueEmail = true;
         options.Password.RequireDigit = true;
@@ -130,6 +135,8 @@ try
         app.UseHsts();
     }
 
+    // await SeedData.InitializeDatabaseAsync(app.Services);
+
     app.UseHttpsRedirection();
     app.UseCors();
     app.UseAntiforgery();
@@ -140,6 +147,9 @@ try
     app.UseAuthorization();
 
     app.MapControllers();
+
+    app.MapGet("/", () => "Hello World!");
+
     app.Run();
 }
 catch (Exception ex) when (ex is not HostAbortedException && ex.Source != "Microsoft.EntityFrameworkCore.Design")

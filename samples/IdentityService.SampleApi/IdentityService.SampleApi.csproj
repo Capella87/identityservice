@@ -38,4 +38,9 @@
     <ProjectReference Include="..\..\src\jwt\IdentityService.Jwt.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>
