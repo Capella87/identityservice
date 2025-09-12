@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -21,16 +23,19 @@ namespace IdentityService.Jwt.Identity;
 // Source: https://github.com/dotnet/aspnetcore/blob/main/src/Security/Authentication/BearerToken/src/BearerTokenHandler.cs
 // Source: https://github.com/dotnet/aspnetcore/blob/main/src/Security/Authentication/JwtBearer/src/JwtBearerHandler.cs
 
-public class JwtTokenHandler : JwtBearerHandler, IAuthenticationSignInHandler
+public class JwtTokenHandler<TUser, UserKey> : JwtBearerHandler, IAuthenticationSignInHandler, IAuthenticationSignOutHandler
+    where TUser : IdentityUser<UserKey>
+    where UserKey : IEquatable<UserKey>
 {
-    private ITokenService _tokenService => Context.RequestServices.GetRequiredService<JwtTokenService>();
+    private readonly ITokenService<TUser, UserKey> _tokenService;
 
     public JwtTokenHandler(
         IOptionsMonitor<JwtBearerOptions> options,
         ILoggerFactory logger,
-        UrlEncoder encoder) : base(options, logger, encoder)
+        UrlEncoder encoder,
+        ITokenService<TUser, UserKey> tokenService) : base(options, logger, encoder)
     {
-
+        _tokenService = tokenService;
     }
 
     public virtual Task SignInAsync(ClaimsPrincipal user, AuthenticationProperties? properties)
@@ -44,7 +49,7 @@ public class JwtTokenHandler : JwtBearerHandler, IAuthenticationSignInHandler
             : HandleSignInAsync(user, properties);
     }
 
-    public Task SignOutAsync(AuthenticationProperties? properties)
+    public virtual Task SignOutAsync(AuthenticationProperties? properties)
     {
         var target = ResolveTarget(Options.ForwardSignOut);
 
