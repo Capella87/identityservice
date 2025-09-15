@@ -36,8 +36,8 @@ You can install IdentityService from NuGet Gallery by nuget CLI or dotnet CLI.
 Remember that you need to install Jwt package to make use of JWT authentication.
 
 ```powershell
-dotnet add package IdentityService --version 0.1.0
-dotnet add package IdentityService.Jwt --version 0.1.0
+dotnet add package Capelladev.IdentityService --version 0.1.0
+dotnet add package Capelladev.IdentityService.Jwt --version 0.1.0
 ```
 
 ### `appsettings.json` Configuration
