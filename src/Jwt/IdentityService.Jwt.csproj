@@ -7,11 +7,15 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>Capelladev.$(AssemblyName)</PackageId>
     <Title>IdentityService.Jwt</Title>
-    <InformationalVersion>0.1.0-alpha.2</InformationalVersion>
-    <PackageVersion>0.1.0-alpha.2</PackageVersion>
-    <Version>0.1.0</Version>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <InformationalVersion>0.2.0</InformationalVersion>
+    <PackageVersion>0.2.0</PackageVersion>
+    <Version>0.2.0</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Authors>Capella87</Authors>
+    <Company>Capelladev</Company>
+    <PackageTags>JWT, token</PackageTags>
+    <PackageProjectUrl>https://github.com/Capella87/identityservice</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Capella87/identityservice</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,10 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IdentityService\IdentityService.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="LICENSE" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>
