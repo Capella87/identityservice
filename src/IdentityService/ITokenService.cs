@@ -18,7 +18,7 @@ public interface ITokenService
 {
     public Task<Result<ITokenResponse?>> CreateTokenAsync(string userId, ClaimsPrincipal user);
 
-    public Task<Result<ITokenResponse?>> RefreshTokenAsync(string refreshToken, ClaimsPrincipal user);
+    public Task<Result<ITokenResponse?>> RefreshTokenAsync(IToken refreshToken, ClaimsPrincipal user);
 
     public Task<Result<IToken?>> GetTokenAsync(string token);
 

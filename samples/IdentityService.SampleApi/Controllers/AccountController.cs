@@ -149,7 +149,7 @@ public class AccountController : ControllerBase
         var tokenEntity = tokenEntityResult.Value as JwtRefreshTokenEntity<IdentityUser<string>, string>;
         var claims = await _signInManager.CreateUserPrincipalAsync(tokenEntity!.User!);
 
-        var result = await _tokenService.RefreshTokenAsync(request.RefreshToken!, claims);
+        var result = await _tokenService.RefreshTokenAsync(tokenEntity, claims);
         if (result.IsFailed)
         {
             return Problem(result.Errors.First().Message, statusCode: StatusCodes.Status400BadRequest, title: "Failed to refresh the access token");

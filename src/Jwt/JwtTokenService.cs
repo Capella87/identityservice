@@ -177,18 +177,17 @@ public class JwtTokenService<TUser, TKey> : ITokenService<TUser, TKey>
         return Result.Ok(result.Value);
     }
 
-    public async Task<Result<ITokenResponse?>> RefreshTokenAsync(string refreshToken, ClaimsPrincipal user)
+    public async Task<Result<ITokenResponse?>> RefreshTokenAsync(IToken refreshToken, ClaimsPrincipal user)
     {
-        var rt = await GetTokenAsync(refreshToken);
-        var tokenUser = (rt.Value as JwtRefreshTokenEntity<TUser, TKey>)!.User;
+        var token = refreshToken as JwtRefreshTokenEntity<TUser, TKey>;
 
-        if (rt.IsFailed)
+        if (token == null)
         {
-            return Result.Fail("Refresh token is not found or expired.");
+            return Result.Fail("Invalid token type.");
         }
 
         // Revoke the refresh token
-        var revokeResult = await RevokeTokenAsync(rt.Value!.Token);
+        var revokeResult = await RevokeTokenAsync(token.Token);
 
         if (revokeResult.Errors.Count > 0)
         {
@@ -211,8 +210,7 @@ public class JwtTokenService<TUser, TKey> : ITokenService<TUser, TKey>
             NotBefore = rTokenResult.Value!.NotBefore,
             ExpiresAt = rTokenResult.Value!.ExpiresAt,
             IsRevoked = false,
-            UserId = tokenUser!.Id,
-            // User = tokenUser,
+            UserId = token.UserId,
             Id = rTokenResult.Value!.Id
         };
 
