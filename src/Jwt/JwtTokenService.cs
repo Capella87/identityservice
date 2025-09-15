@@ -79,7 +79,6 @@ public class JwtTokenService<TUser, TKey> : ITokenService<TUser, TKey>
                 IssuedAt = refreshToken.IssuedAt,
                 NotBefore = refreshToken.NotBefore,
                 ExpiresAt = refreshToken.ExpiresAt,
-                IsRevoked = false,
                 UserId = (TKey)Convert.ChangeType(userId, typeof(TKey))
             };
             var lookupResult = await LookupUserByUserIdAsync(userId);
@@ -209,7 +208,6 @@ public class JwtTokenService<TUser, TKey> : ITokenService<TUser, TKey>
             IssuedAt = rTokenResult.Value!.IssuedAt,
             NotBefore = rTokenResult.Value!.NotBefore,
             ExpiresAt = rTokenResult.Value!.ExpiresAt,
-            IsRevoked = false,
             UserId = token.UserId,
             Id = rTokenResult.Value!.Id
         };
