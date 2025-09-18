@@ -62,7 +62,10 @@ public class JwtTokenRepository<TUser, UserKey> : ITokenRepository
             return Result.Ok();
         }
 
-        _dbContext.Set<JwtRefreshTokenEntity<TUser, UserKey>>().RemoveRange(results);
+        foreach (var entity in results)
+        {
+            entity.RevokedAt = DateTimeOffset.UtcNow;
+        }
         await _dbContext.SaveChangesAsync();
 
         return Result.Ok();
@@ -71,7 +74,8 @@ public class JwtTokenRepository<TUser, UserKey> : ITokenRepository
     public Task<Result> RevokeTokenAsync(IToken token)
     {
         var entity = token as JwtRefreshTokenEntity<TUser, UserKey>;
-        _dbContext.Set<JwtRefreshTokenEntity<TUser, UserKey>>().Remove(entity!);
+        entity!.RevokedAt = DateTimeOffset.UtcNow;
+        _dbContext.Set<JwtRefreshTokenEntity<TUser, UserKey>>().Update(entity!);
 
         return _dbContext.SaveChangesAsync().ContinueWith(t =>
         {

@@ -22,7 +22,7 @@ public class JwtRefreshTokenEntity<TUser, UserKey> : JwtRefreshToken
 
     public TUser? User { get; set; }
 
-    public bool IsRevoked { get; set; } = false;
+    public DateTimeOffset? RevokedAt { get; set; } = null;
 }
 
 public class JwtRefreshTokenEntity<TUser> : JwtRefreshTokenEntity<TUser, string>
