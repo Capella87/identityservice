@@ -7,9 +7,9 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>Capelladev.$(AssemblyName)</PackageId>
     <Title>IdentityService.Jwt</Title>
-    <InformationalVersion>0.2.0</InformationalVersion>
-    <PackageVersion>0.2.0</PackageVersion>
-    <Version>0.2.0</Version>
+    <InformationalVersion>0.2.1</InformationalVersion>
+    <PackageVersion>0.2.1</PackageVersion>
+    <Version>0.2.1</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Authors>Capella87</Authors>
     <Company>Capelladev</Company>
